@@ -12,10 +12,6 @@ class Auth(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    # is_admin = models.BooleanField(default=False)
-    # is_active = models.BooleanField(default=True)
-    # is_staff = models.BooleanField(default=False)
-    # is_superuser = models.BooleanField(default=False)
     password = models.CharField(max_length=500, blank=False, null=False)
 
     objects = CustomUserManager()
@@ -46,7 +42,6 @@ class Auth(AbstractUser):
 class Vendor(Auth):
     business_name = models.CharField(max_length=250)
     phone_number = PhoneNumberField(blank=True, null=True)
-    # created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         verbose_name = _('vendor')
@@ -63,7 +58,6 @@ class Vendor(Auth):
 class Customer(Auth):
     phone_number = PhoneNumberField(blank=True, null=True)
     amount_outstanding = models.FloatField(default=0.00)
-    # date_time_created = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         verbose_name = _('customer')

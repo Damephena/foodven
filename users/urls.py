@@ -1,10 +1,14 @@
 from django.urls import path, include
 from .views import (
-    # CustomerView, 
+    # CustomerView,
+    CustomerProfileView,
+    CustomerListView, 
     CustomerRegisterView,
     CustomerSetPasswordView,
     LoginView,
     # VendorView,
+    VendorProfileView,
+    VendorListView,
     VendorRegisterView,
     VendorSetPasswordView,
 )
@@ -15,8 +19,8 @@ urlpatterns = [
     path('customers/set-password/<str:pk>/', CustomerSetPasswordView.as_view(), name="customer-setpassword"),
     path('vendors/register/', VendorRegisterView.as_view(), name="vendor-register"),
     path('vendors/set-password/<str:pk>/', VendorSetPasswordView.as_view(), name="vendor-setpassword"),
-    # path('customers/login/', include('rest_framework.urls'),),
-    # path('customers/login/', CustomerLoginView.as_view(), name="customer-login"),
-    # path('customers/', CustomerView.as_view(), base_name="customer-view"),
-    # path('vendors/', VendorView.as_view(), base_name="vendor-view")
+    path('customer/profile/', CustomerProfileView.as_view(), name="customer-profile"),
+    path('vendor/profile/', VendorProfileView.as_view(), name="vendor-profile"),
+    path('customers/', CustomerListView.as_view(), name="customer-list"),
+    path('vendors/', VendorListView.as_view(), name="vendor-list")
 ]

@@ -3,17 +3,22 @@ from django.db.models.base import ObjectDoesNotExist
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.hashers import check_password
 
-from rest_framework import generics
+from rest_framework import filters
+from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from django_filters.rest_framework import DjangoFilterBackend
 
+from foodven.settings import EMAIL_HOST_USER
 from .models import Customer, Vendor, Auth
 import users.serializers as serializers
+from permission.permissions import IsVendor
 # Create your views here.
 
 class CustomerRegisterView(generics.CreateAPIView):
     serializer_class = serializers.CustomerRegisterSerializer
+    permission_classes = [permissions.AllowAny,]
 
     def post(self, request, *args, **kwargs):
         customer = Auth.objects.filter(email__exact=request.data['email'].lower()).first()
@@ -43,6 +48,7 @@ class CustomerSetPasswordView(generics.UpdateAPIView):
     lookup_field = 'pk'
     serializer_class = serializers.CustomerSetPasswordSerializer
     queryset = Customer.objects.all()
+    permission_classes = [permissions.AllowAny,]
 
     def put(self, request, pk):
         customer = Customer.objects.get(pk=pk)
@@ -64,9 +70,28 @@ class CustomerSetPasswordView(generics.UpdateAPIView):
             return Response({"error": "Password mismatch"})
 
 
+class CustomerListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAdminUser]
+    serializer_class = serializers.CustomerListSerializer
+    queryset = Customer.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['last_name', 'email', 'first_name', 'id', 'date_joined']
+    search_fields = ['last_name', 'email', 'first_name', 'id', 'date_joined']
+
+
+class CustomerProfileView(APIView):
+    
+    def get(self, request):
+        user = self.request.user
+        queryset = Customer.objects.filter(id=user.id).first()
+        serializer = serializers.CustomerProfileSerializer(queryset, many=False)
+        return Response(data=serializer.data)
+            
+
+
 class LoginView(APIView):
     
-    permission_classes = []
+    permission_classes = [permissions.AllowAny,]
 
     def post(self, request):
         email = request.data['email'].lower()
@@ -136,3 +161,23 @@ class VendorSetPasswordView(generics.UpdateAPIView):
         else:
             return Response({"error": "Password mismatch"})
 
+
+class VendorListView(generics.ListAPIView):
+    serializer_class = serializers.VendorListSerializer
+    queryset = Vendor.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['business_name', 'email', 'first_name', 'id']
+    search_fields = ['business_name', 'email', 'first_name']
+    ordering_fields = ['business_name', 'email', 'first_name']
+
+
+class VendorProfileView(generics.RetrieveAPIView):
+    permission_classes = [IsVendor, ]
+    serializer_class = serializers.VendorProfileSerializer
+    
+    def get(self, request):
+        user = self.request.user
+        queryset = Vendor.objects.filter(id=user.id).first()
+        serializer = serializers.VendorProfileSerializer(queryset, many=False)
+        return Response(data=serializer.data)
+            

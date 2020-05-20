@@ -41,10 +41,18 @@ class CustomerSetPasswordSerializer(serializers.ModelSerializer):
             return instance
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class CustomerListSerializer(serializers.ModelSerializer):
+    '''Serializer for any authenticated user'''
     class Meta:
         model = Customer
-        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'amount_outstanding']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number']
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    '''Serializer for authenticated owner'''
+    class Meta:
+        model = Customer
+        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'amount_outstanding', 'date_joined']
 
 
 class VendorRegisterSerializer(serializers.ModelSerializer):
@@ -83,3 +91,15 @@ class VendorSetPasswordSerializer(serializers.ModelSerializer):
             instance.save()
             Token.objects.create(user=instance)
             return instance
+
+class VendorListSerializer(serializers.ModelSerializer):
+    '''Serializer for customers to view vendor list'''
+    class Meta:
+        model = Vendor
+        fields = ['id', 'business_name', 'phone_number', 'email', 'first_name']
+
+class VendorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vendor
+        fields = ['id', 'email', 'business_name', 'password', 'phone_number', 'first_name', 'last_name', 'date_joined']
+
