@@ -11,8 +11,9 @@ from rest_framework.authtoken.models import Token
 from django_filters.rest_framework import DjangoFilterBackend
 
 from foodven.settings import EMAIL_HOST_USER
-from .models import Customer, Vendor, Auth
 import users.serializers as serializers
+import mailer.emails as mail
+from .models import Customer, Vendor, Auth
 from permission.permissions import IsVendor
 # Create your views here.
 
@@ -33,12 +34,10 @@ class CustomerRegisterView(generics.CreateAPIView):
 
             if customer:
                 user = Customer.objects.get(email=request.data['email'].lower())
+                
                 to_email = request.data['email']
-                subject = "Confirm Email to FoodVen"
-                message = "Hello {} {}! \nYou are trying to sign up with this email: \n{}\n Kindly open this link to continue http://localhost:8000/customers/set-password/{}".format(user.first_name, user.last_name, user.email, user.id)
-                from_email = "noreply@foodvend.com"
+                mail.register_customer(user, to_email)
 
-                Customer.email_user(self, subject, message, from_email, to_email )
                 return Response(serializer.data)
         else:
             return Response(serializer.errors)
@@ -63,9 +62,11 @@ class CustomerSetPasswordView(generics.UpdateAPIView):
                 # save new update
                 serializer.save()
 
+                to_email = customer.email
+                mail.welcome_email(to_email)
+
                 data = {'id': customer.id, 'password': customer.password}
                 return Response(data=data)
-                # return Response({'message': 'Password successfully set!'})
         else:
             return Response({"error": "Password mismatch"})
 
@@ -113,6 +114,7 @@ class LogoutView(generics.RetrieveAPIView):
 
 class VendorRegisterView(generics.CreateAPIView):
     serializer_class = serializers.VendorRegisterSerializer
+    permission_classes = [permissions.AllowAny,]
 
     def post(self, request, *args, **kwargs):
         vendor = Auth.objects.filter(email__exact=request.data['email'].lower()).first()
@@ -127,12 +129,10 @@ class VendorRegisterView(generics.CreateAPIView):
 
             if vendor:
                 user = Vendor.objects.get(email=request.data['email'].lower())
+                
                 to_email = request.data['email']
-                subject = "Confirm Email to FoodVen"
-                message = "Hello {} {}! \nYou are trying to sign up as a vendor with this email: \n{}\nBusiness name: \n{}\nKindly open this link to continue http://localhost:8000/vendors/set-password/{}".format(user.first_name, user.last_name, user.email, user.business_name, user.id)
-                from_email = "noreply@foodvend.com"
+                mail.register_vendor(user, to_email)
 
-                Vendor.email_user(self, subject, message, from_email, to_email )
                 return Response(serializer.data)
         else:
             return Response(serializer.errors)
@@ -142,6 +142,7 @@ class VendorSetPasswordView(generics.UpdateAPIView):
     lookup_field = 'pk'
     serializer_class = serializers.VendorSetPasswordSerializer
     queryset = Customer.objects.all()
+    permission_classes = [permissions.AllowAny,]
 
     def put(self, request, pk):
         vendor = Vendor.objects.get(pk=pk)
@@ -155,6 +156,8 @@ class VendorSetPasswordView(generics.UpdateAPIView):
                 serializer.update(vendor, request.data['password'])
                 # save new update
                 serializer.save()
+                to_email = vendor.email
+                mail.welcome_email(to_email)
 
                 data = {'id': vendor.id, 'password': vendor.password}
                 return Response(data=data)

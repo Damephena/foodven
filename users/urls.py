@@ -6,6 +6,7 @@ from .views import (
     CustomerRegisterView,
     CustomerSetPasswordView,
     LoginView,
+    LogoutView,
     # VendorView,
     VendorProfileView,
     VendorListView,
@@ -15,6 +16,7 @@ from .views import (
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name="login"),
+    path('logout/', LogoutView.as_view(), name="logout"),
     path('customers/register/', CustomerRegisterView.as_view(), name="customer-register"),
     path('customers/set-password/<str:pk>/', CustomerSetPasswordView.as_view(), name="customer-setpassword"),
     path('vendors/register/', VendorRegisterView.as_view(), name="vendor-register"),

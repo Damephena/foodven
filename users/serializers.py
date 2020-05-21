@@ -52,7 +52,9 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
     '''Serializer for authenticated owner'''
     class Meta:
         model = Customer
-        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'phone_number', 'amount_outstanding', 'date_joined']
+        fields = ['id', 'email', 'password', 'first_name', 'last_name', 
+        'phone_number', 'amount_outstanding', 'date_joined'
+        ]
 
 
 class VendorRegisterSerializer(serializers.ModelSerializer):
