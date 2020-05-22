@@ -49,7 +49,7 @@ class CustomerListSerializer(serializers.ModelSerializer):
 
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
-    '''Serializer for authenticated owner'''
+    '''Serializer for authenticated customer instance'''
     class Meta:
         model = Customer
         fields = ['id', 'email', 'password', 'first_name', 'last_name', 
@@ -87,12 +87,13 @@ class VendorSetPasswordSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance, validated_data):
-        # Has to loop through data or else it would raise "string indices must be integers" error
+        
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
             Token.objects.create(user=instance)
             return instance
+
 
 class VendorListSerializer(serializers.ModelSerializer):
     '''Serializer for customers to view vendor list'''
@@ -100,7 +101,9 @@ class VendorListSerializer(serializers.ModelSerializer):
         model = Vendor
         fields = ['id', 'business_name', 'phone_number', 'email', 'first_name']
 
+
 class VendorProfileSerializer(serializers.ModelSerializer):
+    '''Serializer for authenticated vendor instance'''
     class Meta:
         model = Vendor
         fields = ['id', 'email', 'business_name', 'password', 'phone_number', 'first_name', 'last_name', 'date_joined']

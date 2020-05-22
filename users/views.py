@@ -3,8 +3,7 @@ from django.db.models.base import ObjectDoesNotExist
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.hashers import check_password
 
-from rest_framework import filters
-from rest_framework import generics, permissions
+from rest_framework import filters, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -12,7 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from foodven.settings import EMAIL_HOST_USER
 import users.serializers as serializers
-import mailer.emails as mail
+import utils.emails as mail
 from .models import Customer, Vendor, Auth
 from permission.permissions import IsVendor
 # Create your views here.
@@ -88,7 +87,6 @@ class CustomerProfileView(APIView):
         serializer = serializers.CustomerProfileSerializer(queryset, many=False)
         return Response(data=serializer.data)
             
-
 
 class LoginView(APIView):
     
