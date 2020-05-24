@@ -11,7 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from foodven.settings import EMAIL_HOST_USER
 import users.serializers as serializers
-import utils.emails as mail
+import utils.email as mail
 from .models import Customer, Vendor, Auth
 from permission.permissions import IsVendor
 # Create your views here.
