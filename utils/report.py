@@ -13,13 +13,15 @@ from utils.email import generate_daily_report
 
 def get_or_generate_report(vendor):
     day = datetime.datetime.today().replace(tzinfo=pytz.UTC).day
-    
     try:
         report = Report.objects.filter(Q(created_at__day=day))
-    
-        serializer = serializers.ReportSerializer(report, many=True)
-        return serializer.data
-    except Report.DoesNotExist:
+
+        if not report:
+            raise Report.DoesNotExist
+        else:
+            serializer = serializers.ReportSerializer(report, many=True)
+            return serializer.data
+    except (Report.DoesNotExist):
         order = Order.objects.filter(vendor=vendor)
         day = datetime.datetime.today().replace(tzinfo=pytz.UTC).day
 
