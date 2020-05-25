@@ -13,6 +13,7 @@ from foodven.settings import EMAIL_HOST_USER
 import users.serializers as serializers
 import utils.email as mail
 from .models import Customer, Vendor, Auth
+import utils.validator as validator
 from permission.permissions import IsVendor
 # Create your views here.
 
@@ -82,14 +83,13 @@ class CustomerListView(generics.ListAPIView):
 class CustomerProfileView(APIView):
     
     def get(self, request):
-        user = self.request.user
-        queryset = Customer.objects.filter(id=user.id).first()
+        queryset = validator.is_customer(request)
         serializer = serializers.CustomerProfileSerializer(queryset, many=False)
         return Response(data=serializer.data)
             
 
-class LoginView(APIView):
-    
+class LoginView(generics.CreateAPIView):
+    serializer_class = serializers.LoginSerializer
     permission_classes = [permissions.AllowAny,]
 
     def post(self, request):
@@ -104,8 +104,11 @@ class LoginView(APIView):
 
     
 
-class LogoutView(generics.RetrieveAPIView):
-    def logout_view(self, request):
+class LogoutView(APIView):
+    serializer_class = serializers.LogoutSerializer
+    queryset = Auth.objects.all()
+
+    def get(self, request):
         logout(request)
         return Response({'message': 'Successfully logged out.'})
 
@@ -173,12 +176,10 @@ class VendorListView(generics.ListAPIView):
 
 
 class VendorProfileView(generics.RetrieveAPIView):
-    permission_classes = [IsVendor, ]
     serializer_class = serializers.VendorProfileSerializer
     
     def get(self, request):
-        user = self.request.user
-        queryset = Vendor.objects.filter(id=user.id).first()
+        queryset = validator.is_vendor(request)
         serializer = serializers.VendorProfileSerializer(queryset, many=False)
         return Response(data=serializer.data)
             
