@@ -12,6 +12,8 @@ import services.serializers as serializers
 from utils.email import generate_daily_report
 
 def get_or_generate_report(vendor):
+    """Generates report only once"""
+    
     day = datetime.datetime.today().replace(tzinfo=pytz.UTC).day
     try:
         report = Report.objects.filter(Q(created_at__day=day))

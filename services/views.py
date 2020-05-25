@@ -226,7 +226,7 @@ class OrderProgressStatusView(generics.UpdateAPIView):
         return Response(serializer.errors)
 
 
-class ReportGenerateView(generics.ListCreateAPIView):
+class ReportListView(generics.ListAPIView):
     serializer_class = serializers.ReportSerializer
 
     def get(self, request):
@@ -234,7 +234,10 @@ class ReportGenerateView(generics.ListCreateAPIView):
 
         serializer = serializers.ReportSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
+
+class ReportGenerateView(generics.CreateAPIView):
+    serializer_class = serializers.ReportSerializer
     def post(self, request):
         vendor = validator.is_vendor(request)
 
