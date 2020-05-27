@@ -20,7 +20,6 @@ def is_vendor(request):
         raise PermissionDenied
     return user
 
-
 def is_customer(request):
     '''Validates a request is from a customer'''
     try:
@@ -28,7 +27,6 @@ def is_customer(request):
     except (Customer.DoesNotExist, AssertionError):
         raise PermissionDenied
     return user
-
 
 def is_order_vendor_or_customer(request, pk):
     '''Validates a request is the order's owner or menu's vendor'''
@@ -38,7 +36,6 @@ def is_order_vendor_or_customer(request, pk):
         raise PermissionDenied
     return user
 
-
 def is_order_customer(request, pk):
     '''Validates a request is the order's owner'''
     try:
@@ -47,7 +44,6 @@ def is_order_customer(request, pk):
         raise PermissionDenied
     return user
 
-
 def is_order_vendor(request, pk):
     '''Validates a request is the order's vendor'''
     try:
@@ -55,7 +51,6 @@ def is_order_vendor(request, pk):
     except (Order.DoesNotExist, AssertionError):
         raise PermissionDenied
     return user
-
 
 def is_menu_owner(request, pk):
     '''Validates a request is from the menu's owner'''

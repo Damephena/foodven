@@ -8,10 +8,12 @@ class LoginSerializer(serializers.ModelSerializer):
         model = Auth
         fields = ['email', 'password']
 
+
 class LogoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Auth
         fields = ['email']
+
 
 class CustomerRegisterSerializer(serializers.ModelSerializer):
     
@@ -116,5 +118,7 @@ class VendorProfileSerializer(serializers.ModelSerializer):
     '''Serializer for authenticated vendor instance'''
     class Meta:
         model = Vendor
-        fields = ['id', 'email', 'business_name', 'password', 'phone_number', 'first_name', 'last_name', 'date_joined']
+        fields = ['id', 'email', 'business_name', 'password', 'phone_number',
+         'first_name', 'last_name', 'date_joined'
+        ]
 

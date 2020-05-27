@@ -9,7 +9,6 @@ from rest_framework.response import Response
 
 from services.models import Order, Menu, OrderStatus, Report, Notification
 from users.models import Customer, Vendor, Auth
-from permission.permissions import IsOrderOwnerOrVendor, IsMenuOwner
 import services.serializers as serializers
 import utils.email as mail
 from utils.report import get_or_generate_report
@@ -18,8 +17,7 @@ import utils.validator as validator
 
 class MenuListView(generics.ListCreateAPIView):
     serializer_class = serializers.MenuSerializer
-    permission_classes = [IsMenuOwner,]
-
+    
     def get(self, obj):
         queryset = Menu.objects.all()
         serializer = serializers.MenuSerializer(queryset, many=True)
@@ -51,7 +49,6 @@ class MenuDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'pk'
     queryset = Menu.objects.all()
     serializer_class = serializers.MenuSerializer
-    permission_classes = (IsMenuOwner,)
 
     def get(self, request, pk):
         try:
@@ -238,6 +235,7 @@ class ReportListView(generics.ListAPIView):
 
 class ReportGenerateView(generics.CreateAPIView):
     serializer_class = serializers.ReportSerializer
+
     def post(self, request):
         vendor = validator.is_vendor(request)
 
@@ -297,9 +295,4 @@ class NotificationDetailView(generics.RetrieveAPIView):
         queryset = validator.is_notification_owner(request, pk)
         serializer = serializers.NotificationSerializer(queryset, many=False)
         return Response(serializer.data)
-
-        
-
-
-        
 

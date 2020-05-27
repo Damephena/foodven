@@ -14,8 +14,8 @@ import users.serializers as serializers
 import utils.email as mail
 from .models import Customer, Vendor, Auth
 import utils.validator as validator
-from permission.permissions import IsVendor
 # Create your views here.
+
 
 class CustomerRegisterView(generics.CreateAPIView):
     serializer_class = serializers.CustomerRegisterSerializer
@@ -103,7 +103,6 @@ class LoginView(generics.CreateAPIView):
             return Response({'error': 'Wrong credentials'})
 
     
-
 class LogoutView(APIView):
     serializer_class = serializers.LogoutSerializer
     queryset = Auth.objects.all()

@@ -5,6 +5,7 @@ from users.models import Vendor, Customer, Auth
 
 from .models import Menu, Order, Report, OrderStatus, Notification, MessageStatus
 
+
 class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
@@ -64,6 +65,7 @@ class OrderProgressStatusSerializer(serializers.ModelSerializer):
             
             return instance
 
+
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
@@ -86,3 +88,5 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+        
