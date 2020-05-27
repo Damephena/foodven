@@ -14,7 +14,6 @@ import users.serializers as serializers
 import utils.email as mail
 from .models import Customer, Vendor, Auth
 import utils.validator as validator
-# Create your views here.
 
 
 class CustomerRegisterView(generics.CreateAPIView):
@@ -181,4 +180,5 @@ class VendorProfileView(generics.RetrieveAPIView):
         queryset = validator.is_vendor(request)
         serializer = serializers.VendorProfileSerializer(queryset, many=False)
         return Response(data=serializer.data)
+            
             

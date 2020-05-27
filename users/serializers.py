@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import Customer, Vendor, Auth
 
+
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = Auth
