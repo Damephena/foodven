@@ -1,3 +1,7 @@
+# !IMPORTANT:    
+This application is undergoing *complete* revamp.   
+There is no defined timeframe for completion.
+
 ## Foodven
 An application which hosts different vendors and customers to allow purchase of food via available menus. The application is still in progress.        
 
